@@ -64,13 +64,16 @@ public class ROJO_SPECIMEN extends LinearOpMode {
 
         for(int i = 0; i<ciclos_a_sec*3; i++){
             Codo.setPower(1);
-            Muneca.setPower(0.7);
+            Muneca.setPower(0.9);
         }
 
-        sleep(500);
+        sleep(800);
+        Codo.setTargetPosition(0);
 
         for(int i = 0; i<ciclos_a_sec; i++){
-            Muneca.setPower(0.7);
+            Codo.setPower(0.65);
+            Muneca.setPower(0.9);
+            sleep(250);
             Dedo1.setPosition(0);
             Dedo2.setPosition(1);
         }
@@ -129,7 +132,7 @@ public class ROJO_SPECIMEN extends LinearOpMode {
 
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
                 //va a colgar specimen precargado
-                .lineTo(new Vector2d(71, 14))
+                .lineTo(new Vector2d(70, 22))
                 .build();
 
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(startPose)

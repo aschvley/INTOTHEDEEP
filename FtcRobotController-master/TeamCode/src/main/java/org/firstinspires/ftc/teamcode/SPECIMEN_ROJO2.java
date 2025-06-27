@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive; // Import your d
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 //RESPALDO
-@Autonomous(name = "ROJO_ESTACIONARSE")
-public class ROJO_ESTACIONARSE extends LinearOpMode {
+@Autonomous(name = "SPECIMEN_ROJO2")
+public class SPECIMEN_ROJO2 extends LinearOpMode {
 
     private DcMotor leftRear;
     private DcMotor leftFront;
@@ -64,35 +64,22 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
 
         for(int i = 0; i<ciclos_a_sec*3; i++){
             Codo.setPower(1);
-            Muneca.setPower(0.7);
+            Muneca.setPower(0.9);
         }
 
-        sleep(500);
+        sleep(800);
+        Codo.setTargetPosition(0);
 
         for(int i = 0; i<ciclos_a_sec; i++){
-            Muneca.setPower(0.7);
+            Codo.setPower(0.65);
+            Muneca.setPower(0.9);
+            sleep(250);
             Dedo1.setPosition(0);
             Dedo2.setPosition(1);
         }
 
         Codo.setPower(0);
         Muneca.setTargetPosition(0);
-    }
-
-    public void lo_q_hizo_carlos(){
-        Dedo1.setPosition(0.77);
-        Dedo2.setPosition(-0.77);
-        Muneca.setTargetPosition(-150);
-        Muneca.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Muneca.setPower(0.7);
-        telemetry.addData("Muneca", Muneca.getCurrentPosition());
-        telemetry.update();
-        while (Muneca.isBusy()) {
-            idle();
-        }
-        telemetry.addData("Muneca", Muneca.getCurrentPosition());
-        telemetry.update();
-        Muneca.setPower(0);
     }
 
 
@@ -145,7 +132,7 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
 
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
                 //va a colgar specimen precargado
-                .lineTo(new Vector2d(75, 14))
+                .lineTo(new Vector2d(70, 14))
                 .build();
 
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(startPose)
@@ -161,6 +148,37 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
                 .strafeLeft(40)
                 .build();
 
+        //NO FUNCIONA
+    /*    TrajectorySequence ts3 = drive.trajectorySequenceBuilder(startPose)
+                //gira a la derecha para empujar sample 1
+                .strafeLeft(40)
+                .build();
+
+        TrajectorySequence ts4 = drive.trajectorySequenceBuilder(startPose)
+                //gira a la derecha para empujar sample 1
+                .turn(-80)
+                .build();
+
+        TrajectorySequence ts5 = drive.trajectorySequenceBuilder(startPose)
+                //empuja sample 2
+                .turn(Math.toRadians(-110))
+                .build();
+
+        TrajectorySequence ts6 = drive.trajectorySequenceBuilder(startPose)
+                //empuja sample 3
+                .lineTo(new Vector2d()) //O USAR STRAFE LEFT
+                .turn(Math.toRadians(-110))
+                .build();
+
+        TrajectorySequence ts7 = drive.trajectorySequenceBuilder(startPose)
+                .lineTo(new Vector2d(35, -60))
+                .waitSeconds(3) //poner en la ultima ts
+                .build();
+        */
+
+        //falta estacionarse en el ascent 1
+        //estrategia: colgar precargado, empujar 3, estacionarse en ascent 1 para 3 puntos mas
+
 
         waitForStart();
         telemetry.addData("Status", "Initialized");
@@ -171,19 +189,19 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
         drive.followTrajectorySequence(ts);
 
         hang_the_specimen();
-        lo_q_hizo_carlos();
+        sleep(500);
 
         drive.followTrajectorySequence(ts2);
-
         drive.followTrajectorySequence(ts3);
-
         drive.followTrajectorySequence(ts4);
-        sleep(2500);
-        
+
+
+
         // Keep the OpMode alive while following.  The `isBusy()` check
         // is important to allow the control loop to run.
         while (opModeIsActive() && drive.isBusy()) {
             drive.update(); // Crucial: Update Road Runner's pose estimate
+
             // Add telemetry for debugging (optional, but highly recommended)
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
