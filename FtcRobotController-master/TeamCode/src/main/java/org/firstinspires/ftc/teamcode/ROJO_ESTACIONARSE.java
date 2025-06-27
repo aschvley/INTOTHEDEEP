@@ -5,31 +5,25 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive; // Import your drive class
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 //RESPALDO
 @Autonomous(name = "ROJO_ESTACIONARSE")
 public class ROJO_ESTACIONARSE extends LinearOpMode {
 
-    private DcMotor leftRear;
-    private DcMotor leftFront;
-    private DcMotor rightFront;
-    private DcMotor rightRear;
     private DcMotor LinearMotion;
     private DcMotor Codo;
     private DcMotor Muneca;
     private Servo Dedo1;
     private Servo Dedo2;
-    private DcMotor Codo2;
     private int ciclos_a_sec = 32767;
     int ultimaPosicionMuneca;
 
     public void pickup_specimen(){
-        Muneca.setTargetPosition(120);
+        Muneca.setTargetPosition(105);
         Muneca.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Muneca.setPower(1);
         Dedo1.setPosition(1);
@@ -37,9 +31,6 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
         Codo.setTargetPosition(-269);
         Codo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Codo.setPower(1);
-        Codo2.setTargetPosition(-20);
-        Codo2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Codo2.setPower(1);
         Dedo1.setPosition(0);
         Dedo2.setPosition(0);
         Muneca.setTargetPosition(0);
@@ -48,35 +39,44 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
         Codo.setTargetPosition(0);
         Codo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Codo.setPower(1);
-        Codo2.setTargetPosition(0);
-        Codo2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Codo2.setPower(1);
         return;
     }
 
     public void hang_the_specimen(){
-        Muneca.setTargetPosition(120);
+        Muneca.setTargetPosition(90);
         Muneca.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Codo.setTargetPosition(-880);
+        Codo.setTargetPosition(-1300);
         Codo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Dedo1.setPosition(1);
-        Dedo2.setPosition(0);
+        Dedo1.setPosition(1); // dedo1 en 1 es cerrado
+        Dedo2.setPosition(0); // dedo 2 en 0 es cerrado
 
         for(int i = 0; i<ciclos_a_sec*3; i++){
-            Codo.setPower(1);
-            Muneca.setPower(0.7);
+            Codo.setPower(1); // SUBIR BRAZO
+        }
+        for(int i = 0; i<ciclos_a_sec*3; i++){
+            Codo.setPower(1); // MANTENER BRAZO
+            Muneca.setPower(1); // EXTENDER MUNECA
         }
 
-        sleep(500);
 
+        Codo.setTargetPosition(-1000);
+        Codo.setPower(-0.3); // BAJA EL BRAZO PARA COLGAR
+        sleep(500);
+        // abrir para soltar sample
+        Dedo1.setPosition(0);
+        Dedo2.setPosition(1);
+        sleep(500);
+        Dedo1.setPosition(1);
+        Dedo2.setPosition(0);
+        sleep(500);
         for(int i = 0; i<ciclos_a_sec; i++){
             Muneca.setPower(0.7);
-            Dedo1.setPosition(0);
-            Dedo2.setPosition(1);
         }
 
         Codo.setPower(0);
         Muneca.setTargetPosition(0);
+
+
     }
 
 
@@ -90,7 +90,7 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
         Dedo2 = hardwareMap.get(Servo.class, "Dedo2");
 
         //ITALY
-        Codo.setDirection(DcMotor.Direction.REVERSE);
+        Codo.setDirection(DcMotor.Direction.FORWARD);
         LinearMotion.setDirection(DcMotor.Direction.REVERSE);
         Codo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LinearMotion.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -98,27 +98,9 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
         LinearMotion.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Codo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LinearMotion.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Muneca.setDirection(DcMotor.Direction.REVERSE);
         Muneca.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Muneca.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        //NOW
-        /*
-        //for starters
-        LinearMotion.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Codo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Muneca.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        // Linear
-        LinearMotion.setDirection(DcMotor.Direction.FORWARD);
-        LinearMotion.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LinearMotion.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        // Arm
-        Codo.setDirection(DcMotor.Direction.REVERSE);
-        Codo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Codo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        // Muneca
-        Muneca.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Muneca.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
-
 
         // Initialize Road Runner drive system (SampleMecanumDrive)
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -129,20 +111,22 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
 
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
                 //va a colgar specimen precargado
-                .lineTo(new Vector2d(75, 14))
+                .lineTo(new Vector2d(40, 11))
                 .build();
 
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(startPose)
-                //se posiciona para girar a la derecha
-                .lineTo(new Vector2d(40, -40))
+                //Se posicion para ir a recoger especimen
+                .strafeLeft(40)
                 .build();
 
         TrajectorySequence ts3 = drive.trajectorySequenceBuilder(startPose)
-                .forward(120)
+                // Va hacia adelante para recoger especimen
+                .forward(55)
                 .build();
 
         TrajectorySequence ts4 = drive.trajectorySequenceBuilder(startPose)
-                .strafeLeft(40)
+                // Va hacia la izquierda para recoger especimen
+                .strafeLeft(20)
                 .build();
 
 
@@ -156,26 +140,8 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
 
         hang_the_specimen();
         sleep(1500);
-        Dedo1.setPosition(0.77);
-        Dedo2.setPosition(-0.77);
-        Muneca.setTargetPosition(-150);
-        Muneca.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Muneca.setPower(0.7);
-        telemetry.addData("heading", Muneca.getCurrentPosition());
-        telemetry.update();
-        while (Muneca.isBusy()) {
-            idle();
-        }
-        telemetry.addData("heading", Muneca.getCurrentPosition());
-        telemetry.update();
-        Muneca.setPower(0);
 
         drive.followTrajectorySequence(ts2);
-
-        drive.followTrajectorySequence(ts3);
-
-        drive.followTrajectorySequence(ts4);
-        sleep(2500);
 
 
 
