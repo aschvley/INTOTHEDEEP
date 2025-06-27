@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 //RESPALDO
-@Autonomous(name = "RAHARAV2")
-public class RAHARAV2 extends LinearOpMode {
+@Autonomous(name = "RAHARA_BASKETS")
+public class RAHARA_BASKETS extends LinearOpMode {
 
     private DcMotor leftRear;
     private DcMotor leftFront;
@@ -25,7 +25,7 @@ public class RAHARAV2 extends LinearOpMode {
     private Servo Dedo2;
     private int ciclos_a_sec = 25000;
 
-    public void hang_the_specimen(){
+    public void take_sample(){
         Muneca.setTargetPosition(90);
         Muneca.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Codo.setTargetPosition(-1300);
@@ -42,7 +42,6 @@ public class RAHARAV2 extends LinearOpMode {
             Muneca.setPower(1); // EXTENDER MUNECA
         }
 
-
         Codo.setTargetPosition(-850);
         Codo.setPower(-0.3); // BAJA EL BRAZO PARA COLGAR
         sleep(800);
@@ -54,14 +53,13 @@ public class RAHARAV2 extends LinearOpMode {
         Dedo1.setPosition(1);
         Dedo2.setPosition(0);
         sleep(200);
+
         for(int i = 0; i<ciclos_sec; i++){
             Muneca.setPower(0.7); // guarda muneca
         }
 
         Codo.setPower(0);
         Muneca.setTargetPosition(0);
-
-
     }
 
     private void frenar(){
@@ -71,6 +69,7 @@ public class RAHARAV2 extends LinearOpMode {
         rightRear.setPower(0);
     }
 
+    //TODO: AGREGAR FUNCION PARA ENCESTAR
 
     public void runOpMode() throws InterruptedException {
         leftRear = hardwareMap.get(DcMotor.class, "leftRear");
@@ -100,7 +99,8 @@ public class RAHARAV2 extends LinearOpMode {
         Dedo1 = hardwareMap.get(Servo.class, "Dedo1");
         Dedo2 = hardwareMap.get(Servo.class, "Dedo2");
 
-        //ITALY (STILL WORKS)
+
+        //ITALY ARM (STILL WORKS)
         Codo.setDirection(DcMotor.Direction.FORWARD);
         LinearMotion.setDirection(DcMotor.Direction.REVERSE);
         Codo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -117,25 +117,13 @@ public class RAHARAV2 extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         // Set the starting pose.  IMPORTANT: Use inches and radians!
-        Pose2d startPose = new Pose2d(26, -63.5, Math.toRadians(120)); //Starting pose
+        Pose2d startPose = new Pose2d(-35, -63.5, Math.toRadians(90)); //Starting pose
         drive.setPoseEstimate(startPose); // Tell Road Runner where the robot starts
 
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
-                //va a colgar specimen precargado
-                .lineTo(new Vector2d(40, 10))
+                //va hacia el primer sample para agarrarlo
+                .lineTo(new Vector2d(-35, 10))
                 .build();
-
-        TrajectorySequence ts2 = drive.trajectorySequenceBuilder(startPose)
-                //Se posicion para ir a recoger especimen
-                .strafeLeft(17)
-                .build();
-
-        TrajectorySequence ts3 = drive.trajectorySequenceBuilder(startPose)
-                // Va hacia adelante para recoger especimen
-                .forward(70)
-                .build();
-
-
 
 
         waitForStart();
@@ -146,57 +134,39 @@ public class RAHARAV2 extends LinearOpMode {
         // Follow the trajectory.
         drive.followTrajectorySequence(ts);
 
-        hang_the_specimen();
+        take_sample();
         //TODO: DE 600 a 300
         sleep(300);
 
 
-
-        // AQUI EMPIEZA ESTE SEGMENTO DE CODIGO A PULSOOO
-        for(int i = 0; i<ciclos_a_sec*2.45; i++){ //DERECHA DETRAS DE ESPECIMENES (ESTAN INVERTIDOS LOS MOTORES)
-            leftFront.setPower(-0.4);
-            leftRear.setPower(0.4);
-            rightFront.setPower(0.4);
+        // AQUI EMPIEZA EL SEGMENTO DE CODIGO A PULSO
+        for (int i = 0; i < ciclos_a_sec * 0.8; i++) { //DERECHA DETRAS DE ESPECIMENES (ESTAN INVERTIDOS LOS MOTORES)
+            leftFront.setPower(0.4);
+            leftRear.setPower(-0.4);
+            rightFront.setPower(-0.4);
             rightRear.setPower(-0.4);
         }
         frenar();
         sleep(50);
 
-        for(int i = 0; i<ciclos_a_sec*0.2; i++){ // PRIMER ROTAR LEVEMETE HACIA LA IZQUIERDA SOBRE SU PROPIO EJE
-            leftFront.setPower(-0.4);
-            leftRear.setPower(-0.4);
+        for (int i = 0; i < ciclos_a_sec * 0.4; i++) { // PRIMER ROTAR HACIA LA DERECHA SOBRE SU PROPIO EJE
+            leftFront.setPower(0.4);
+            leftRear.setPower(0.4);
+            rightFront.setPower(-0.4);
+            rightRear.setPower(-0.4);
+        }
+        frenar();
+        sleep(50);
+
+        for(int i = 0; i<ciclos_a_sec*2.1; i++){ //VA AL FRENTE HACIA BASKET
+            leftFront.setPower(0.4);
             rightFront.setPower(0.4);
+            leftRear.setPower(0.4);
             rightRear.setPower(0.4);
         }
         frenar();
         sleep(50);
-
-        for(int i = 0; i<ciclos_a_sec*0.8; i++){ //ADELANTE (ESTAN INVERTIDOS LOS MOTORES)
-            leftFront.setPower(0.7);
-            rightFront.setPower(0.7);
-            leftRear.setPower(0.7);
-            rightRear.setPower(0.7);
-        }
-        frenar();
-        sleep(50);
-
-        for(int i = 0; i<ciclos_a_sec*0.9; i++){ //DERECHA FRENTE ESPECIMEN(ESTAN INVERTIDOS LOS MOTORES)
-            leftFront.setPower(-0.4);
-            leftRear.setPower(0.4);
-            rightFront.setPower(0.4);
-            rightRear.setPower(-0.4);
-        }
-        frenar();
-        sleep(50);
-
-        for(int i = 0; i<ciclos_a_sec*2.1; i++){ //ATRAS Y ARRASTRA PRIMER ESPECIMEN (ESTAN INVERTIDOS LOS MOTORES)
-            leftFront.setPower(-0.4);
-            rightFront.setPower(-0.4);
-            leftRear.setPower(-0.4);
-            rightRear.setPower(-0.4);
-        }
-        frenar();
-        sleep(50);
+        //TODO: AQUI SE ACTIVA EL BRAZO PARA ENCESTAR
 
 //        for(int i = 0; i<ciclos_a_sec*0.037; i++){ //SEGUNDO ROTAR LEVEMETE HACIA LA IZQUIERDA SOBRE SU PROPIO EJE
 //            leftFront.setPower(-0.4);

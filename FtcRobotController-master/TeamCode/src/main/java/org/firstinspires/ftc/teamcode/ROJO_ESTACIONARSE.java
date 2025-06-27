@@ -155,7 +155,6 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
         drive.followTrajectorySequence(ts);
 
         hang_the_specimen();
-<<<<<<< HEAD
         lo_q_hizo_carlos();
 
         drive.followTrajectorySequence(ts2);
@@ -164,16 +163,13 @@ public class ROJO_ESTACIONARSE extends LinearOpMode {
 
         drive.followTrajectorySequence(ts4);
         sleep(2500);
-        
-=======
+
         sleep(1500);
 
         drive.followTrajectorySequence(ts2);
 
 
 
-
->>>>>>> dfa84601cb258b22e055cc054c469dce62dc2646
         // Keep the OpMode alive while following.  The `isBusy()` check
         // is important to allow the control loop to run.
         while (opModeIsActive() && drive.isBusy()) {
